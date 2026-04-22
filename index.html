@@ -3,110 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendario Personalizado PNI Chile</title>
+    <title>Sirius - Auditoría PNI Chile</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-100 p-4 font-sans text-slate-800">
+<body class="bg-slate-100 p-2 md:p-4 font-sans text-slate-800">
     <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden">
         <div class="bg-indigo-800 p-6 text-white text-center">
-            <h1 class="text-2xl font-bold italic">Mi calendario de vacunación</h1>
-            <p class="text-indigo-200 text-xs tracking-widest uppercase">Auditoría de Inmunización Histórica - Chile</p>
+            <h1 class="text-2xl font-bold italic">Sirius / Synapse Core</h1>
+            <p class="text-indigo-200 text-xs tracking-widest uppercase font-semibold">Auditoría Inmunológica Profesional</p>
         </div>
 
-        <div class="p-6 space-y-6">
-            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                <label class="block text-xs font-black text-slate-500 uppercase mb-2">Fecha de Nacimiento del Paciente</label>
-                <input type="date" id="dob" onchange="auditar()" class="w-full p-3 border-2 border-indigo-100 rounded-lg focus:border-indigo-500 outline-none transition-all">
+        <div class="p-4 md:p-6 space-y-6">
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-4">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 uppercase mb-1">Fecha de Nacimiento</label>
+                    <input type="date" id="dob" onchange="auditar()" class="w-full p-3 border-2 border-indigo-100 rounded-lg focus:border-indigo-500 outline-none transition-all text-sm">
+                </div>
                 
-                <div class="flex gap-4 mt-4">
-                    <select id="genero" onchange="auditar()" class="flex-1 p-2 bg-white border rounded-lg text-sm">
-                        <option value="todos">Género: No especificado</option>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <select id="genero" onchange="auditar()" class="p-2 bg-white border rounded-lg text-xs">
+                        <option value="todos">Género: Todos</option>
                         <option value="masculino">Masculino</option>
                         <option value="femenino">Femenino</option>
                     </select>
+
+                    <div class="flex items-center space-x-2 bg-white p-2 border rounded-lg">
+                        <input type="checkbox" id="esRapaNui" onchange="auditar()" class="w-4 h-4 text-indigo-600">
+                        <label class="text-[10px] font-bold uppercase text-slate-600">Reside Rapa Nui</label>
+                    </div>
+
+                    <div class="flex items-center space-x-2 bg-white p-2 border rounded-lg">
+                        <input type="checkbox" id="esViajero" onchange="auditar()" class="w-4 h-4 text-orange-600">
+                        <label class="text-[10px] font-bold uppercase text-slate-600">Viaje Endémico</label>
+                    </div>
                 </div>
             </div>
 
             <div id="pantalla-inicio" class="text-center py-12 text-slate-400">
-                <p>Esperando datos para iniciar cruce de información...</p>
+                <p class="text-sm">Ingrese datos del paciente para generar el reporte.</p>
             </div>
 
             <div id="resultados" class="hidden space-y-4">
-                <div id="box-inminente" class="hidden bg-orange-50 border-l-4 border-orange-500 p-4 rounded-r-lg">
-                    <h3 class="text-orange-800 font-black text-xs uppercase mb-2">⚠️ Inminentes (Próximos 30 días)</h3>
-                    <ul id="list-inminente" class="text-sm text-orange-900 space-y-1 list-disc pl-5"></ul>
+                <div id="box-proyeccion" class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
+                    <h3 class="text-amber-800 font-black text-xs uppercase mb-3 flex justify-between">
+                        <span>📅 Proyección de Próximas Dosis</span>
+                        <span id="edad-actual" class="text-[10px] bg-amber-200 px-2 py-0.5 rounded-full"></span>
+                    </h3>
+                    <div id="list-proyeccion" class="space-y-3 text-sm"></div>
                 </div>
 
                 <div id="box-brecha" class="hidden bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
-                    <h3 class="text-red-800 font-black text-xs uppercase mb-2">🚫 Brecha Histórica (No recibió por PNI)</h3>
-                    <p class="text-[10px] text-red-600 mb-2 italic underline">Paciente ya pasó la edad, pero la vacuna no estaba vigente en su año de nacimiento.</p>
-                    <ul id="list-brecha" class="text-sm text-red-900 space-y-1 list-disc pl-5 font-medium"></ul>
+                    <h3 class="text-red-800 font-black text-xs uppercase mb-1">🚫 Brecha Histórica (No PNI al nacer)</h3>
+                    <p class="text-[9px] text-red-600 mb-2 italic">Podría requerir indicación particular/catch-up.</p>
+                    <ul id="list-brecha" class="text-xs text-red-900 space-y-1 list-disc pl-5"></ul>
+                </div>
+
+                <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-r-lg">
+                    <h3 class="text-purple-800 font-black text-xs uppercase mb-2">💡 Sugerencias Complementarias (Privadas)</h3>
+                    <ul id="list-comp" class="text-xs text-purple-900 space-y-1 list-disc pl-5"></ul>
                 </div>
 
                 <div class="bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-r-lg">
-                    <h3 class="text-emerald-800 font-black text-xs uppercase mb-2">✅ Debería estar al día (PNI histórico)</h3>
-                    <ul id="list-pasadas" class="text-[11px] text-emerald-700 grid grid-cols-1 md:grid-cols-2 gap-x-4 list-inside list-check"></ul>
+                    <h3 class="text-emerald-800 font-black text-xs uppercase mb-2">✅ Debería estar al día (PNI)</h3>
+                    <ul id="list-pasadas" class="text-[10px] text-emerald-700 grid grid-cols-2 gap-x-2 list-inside list-check"></ul>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // BASE DE DATOS ESTRATÉGICA PNI CHILE
-        const PNI_HISTORICO = [
-            { n: "HepB Recién Nacido", meses: 0, inicio: 2005, gen: "todos" },
-            { n: "Hexavalente (1ra)", meses: 2, inicio: 2018, gen: "todos" }, // Reemplaza Penta
-            { n: "Pentavalente (1ra)", meses: 2, fin: 2017, gen: "todos" },
-            { n: "Neumocócica 13v (1ra)", meses: 2, inicio: 2011, gen: "todos" },
-            { n: "Meningocócica ACWY", meses: 12, inicio: 2021, gen: "todos" },
-            { n: "Hepatitis A", meses: 18, inicio: 2018, gen: "todos" },
-            { n: "Varicela (1ra)", meses: 18, inicio: 2020, gen: "todos" },
-            { n: "VPH 1ra Dosis (4° Básico)", meses: 108, inicio: 2014, gen: "femenino" },
-            { n: "VPH 1ra Dosis (4° Básico)", meses: 108, inicio: 2019, gen: "masculino" },
-            { n: "Refuerzo BCG (6 años)", meses: 72, fin: 2005, gen: "todos" }
+        const PNI = [
+            { n: "HepB Recién Nacido", meses: 0, inicio: 2005, pni: true },
+            { n: "Hexavalente (1ra)", meses: 2, inicio: 2018, pni: true },
+            { n: "Neumocócica 13v (1ra)", meses: 2, inicio: 2011, pni: true },
+            { n: "Hexavalente (2da)", meses: 4, inicio: 2018, pni: true },
+            { n: "Meningocócica ACWY", meses: 12, inicio: 2021, pni: true },
+            { n: "Hepatitis A", meses: 18, inicio: 2018, pni: true },
+            { n: "Varicela (1ra)", meses: 18, inicio: 2020, pni: true },
+            { n: "Fiebre Amarilla (Rapa Nui)", meses: 18, inicio: 2020, rapanui: true, pni: true },
+            { n: "VPH 1ra Dosis", meses: 108, inicio: 2014, gen: "femenino", pni: true },
+            { n: "VPH 1ra Dosis", meses: 108, inicio: 2019, gen: "masculino", pni: true },
+            // Complementarias
+            { n: "Meningocócica B (Bexsero 1ra)", meses: 3, pni: false, nota: "Sugerida a los 3 y 5 meses" },
+            { n: "Meningocócica B (Bexsero 2da)", meses: 5, pni: false },
+            { n: "Rotavirus", meses: 2, pni: false, nota: "Ventana máxima hasta los 6 meses" }
         ];
 
         function auditar() {
-            const dobValue = document.getElementById('dob').value;
-            if (!dobValue) return;
+            const dobVal = document.getElementById('dob').value;
+            if (!dobVal) return;
 
-            const dob = new Date(dobValue);
+            const dob = new Date(dobVal);
             const hoy = new Date();
+            const esRapaNui = document.getElementById('esRapaNui').checked;
+            const esViajero = document.getElementById('esViajero').checked;
             const gen = document.getElementById('genero').value;
             const anioNac = dob.getFullYear();
 
-            // Cálculo preciso de edad en meses
-            let mesesActual = (hoy.getFullYear() - dob.getFullYear()) * 12 + (hoy.getMonth() - dob.getMonth());
-            if (hoy.getDate() < dob.getDate()) mesesActual--;
+            let meses = (hoy.getFullYear() - dob.getFullYear()) * 12 + (hoy.getMonth() - dob.getMonth());
+            if (hoy.getDate() < dob.getDate()) meses--;
 
             document.getElementById('pantalla-inicio').classList.add('hidden');
             document.getElementById('resultados').classList.remove('hidden');
+            document.getElementById('edad-actual').innerText = `${meses} meses de edad`;
 
-            const inminentes = [], brechas = [], pasadas = [];
+            const proyeccion = { "30d": [], "60d": [], "90d": [], "6m": [] };
+            const brechas = [], pasadas = [], comp = [];
 
-            PNI_HISTORICO.forEach(v => {
-                // Filtro por género si aplica
-                if (v.gen !== "todos" && gen !== "todos" && v.gen !== gen) return;
+            PNI.forEach(v => {
+                if (v.gen && gen !== "todos" && v.gen !== gen) return;
+                if (v.rapanui && !esRapaNui) return;
 
-                const edadCumplida = mesesActual >= v.meses;
-                const yaExistia = (!v.inicio || anioNac >= v.inicio) && (!v.fin || anioNac <= v.fin);
-                const proximo30 = (v.meses - mesesActual >= 0) && (v.meses - mesesActual <= 1);
+                const diff = v.meses - meses;
+                const yaExistia = !v.inicio || anioNac >= v.inicio;
 
-                if (proximo30 && yaExistia) {
-                    inminentes.push(v.n);
-                } else if (edadCumplida) {
-                    if (yaExistia) pasadas.push(v.n);
-                    else brechas.push(`${v.n} (No existía en ${anioNac})`);
+                if (diff >= 0) {
+                    const item = v.pni ? `<b>${v.n}</b>` : `${v.n} (Privada)`;
+                    if (diff <= 1) proyeccion["30d"].push(item);
+                    else if (diff <= 2) proyeccion["60d"].push(item);
+                    else if (diff <= 3) proyeccion["90d"].push(item);
+                    else if (diff <= 6) proyeccion["6m"].push(item);
+                } else {
+                    if (v.pni) {
+                        if (yaExistia) pasadas.push(v.n);
+                        else brechas.push(`${v.n} (No existía en ${anioNac})`);
+                    } else if (Math.abs(diff) < 12) { 
+                        comp.push(`${v.n} (Ventana factible)`);
+                    }
                 }
             });
 
-            // Renderizar
-            document.getElementById('list-inminente').innerHTML = inminentes.map(i => `<li>${i}</li>`).join('');
-            document.getElementById('box-inminente').style.display = inminentes.length ? 'block' : 'none';
+            // Lógica Extra Fiebre Amarilla Viajero
+            if (esViajero && !esRapaNui) {
+                proyeccion["30d"].push("<span class='text-orange-600'>Fiebre Amarilla (Viajero: No PNI)</span>");
+            }
+
+            // Renderizar Proyección
+            const renderProg = (titulo, lista, color) => {
+                if (lista.length === 0) return "";
+                return `<div class="mb-2"><span class="font-bold text-[10px] ${color} block mb-1 underline">${titulo}</span>
+                        <ul class="list-disc pl-4">${lista.map(l => `<li>${l}</li>`).join('')}</ul></div>`;
+            };
+
+            document.getElementById('list-proyeccion').innerHTML = 
+                renderProg("PRÓXIMOS 30 DÍAS (CRÍTICO)", proyeccion["30d"], "text-red-600") +
+                renderProg("EN 60 DÍAS", proyeccion["60d"], "text-orange-600") +
+                renderProg("EN 90 DÍAS", proyeccion["90d"], "text-blue-600") +
+                renderProg("PRÓXIMO SEMESTRE (6 MESES)", proyeccion["6m"], "text-indigo-600");
 
             document.getElementById('list-brecha').innerHTML = brechas.map(b => `<li>${b}</li>`).join('');
             document.getElementById('box-brecha').style.display = brechas.length ? 'block' : 'none';
-
+            document.getElementById('list-comp').innerHTML = comp.map(c => `<li>${c}</li>`).join('');
             document.getElementById('list-pasadas').innerHTML = pasadas.map(p => `<li>• ${p}</li>`).join('');
         }
     </script>
