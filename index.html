@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sirius - Auditoría PNI Chile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 p-4 font-sans text-slate-800">
+    <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <div class="bg-indigo-800 p-6 text-white text-center">
+            <h1 class="text-2xl font-bold italic">Sirius / Synapse Core</h1>
+            <p class="text-indigo-200 text-xs tracking-widest uppercase">Auditoría de Inmunización Histórica - Chile</p>
+        </div>
+
+        <div class="p-6 space-y-6">
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <label class="block text-xs font-black text-slate-500 uppercase mb-2">Fecha de Nacimiento del Paciente</label>
+                <input type="date" id="dob" onchange="auditar()" class="w-full p-3 border-2 border-indigo-100 rounded-lg focus:border-indigo-500 outline-none transition-all">
+                
+                <div class="flex gap-4 mt-4">
+                    <select id="genero" onchange="auditar()" class="flex-1 p-2 bg-white border rounded-lg text-sm">
+                        <option value="todos">Género: No especificado</option>
+                        <option value="masculino">Masculino</option>
+                        <option value="femenino">Femenino</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="pantalla-inicio" class="text-center py-12 text-slate-400">
+                <p>Esperando datos para iniciar cruce de información...</p>
+            </div>
+
+            <div id="resultados" class="hidden space-y-4">
+                <div id="box-inminente" class="hidden bg-orange-50 border-l-4 border-orange-500 p-4 rounded-r-lg">
+                    <h3 class="text-orange-800 font-black text-xs uppercase mb-2">⚠️ Inminentes (Próximos 30 días)</h3>
+                    <ul id="list-inminente" class="text-sm text-orange-900 space-y-1 list-disc pl-5"></ul>
+                </div>
+
+                <div id="box-brecha" class="hidden bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                    <h3 class="text-red-800 font-black text-xs uppercase mb-2">🚫 Brecha Histórica (No recibió por PNI)</h3>
+                    <p class="text-[10px] text-red-600 mb-2 italic underline">Paciente ya pasó la edad, pero la vacuna no estaba vigente en su año de nacimiento.</p>
+                    <ul id="list-brecha" class="text-sm text-red-900 space-y-1 list-disc pl-5 font-medium"></ul>
+                </div>
+
+                <div class="bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-r-lg">
+                    <h3 class="text-emerald-800 font-black text-xs uppercase mb-2">✅ Debería estar al día (PNI histórico)</h3>
+                    <ul id="list-pasadas" class="text-[11px] text-emerald-700 grid grid-cols-1 md:grid-cols-2 gap-x-4 list-inside list-check"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // BASE DE DATOS ESTRATÉGICA PNI CHILE
+        const PNI_HISTORICO = [
+            { n: "HepB Recién Nacido", meses: 0, inicio: 2005, gen: "todos" },
+            { n: "Hexavalente (1ra)", meses: 2, inicio: 2018, gen: "todos" }, // Reemplaza Penta
+            { n: "Pentavalente (1ra)", meses: 2, fin: 2017, gen: "todos" },
+            { n: "Neumocócica 13v (1ra)", meses: 2, inicio: 2011, gen: "todos" },
+            { n: "Meningocócica ACWY", meses: 12, inicio: 2021, gen: "todos" },
+            { n: "Hepatitis A", meses: 18, inicio: 2018, gen: "todos" },
+            { n: "Varicela (1ra)", meses: 18, inicio: 2020, gen: "todos" },
+            { n: "VPH 1ra Dosis (4° Básico)", meses: 108, inicio: 2014, gen: "femenino" },
+            { n: "VPH 1ra Dosis (4° Básico)", meses: 108, inicio: 2019, gen: "masculino" },
+            { n: "Refuerzo BCG (6 años)", meses: 72, fin: 2005, gen: "todos" }
+        ];
+
+        function auditar() {
+            const dobValue = document.getElementById('dob').value;
+            if (!dobValue) return;
+
+            const dob = new Date(dobValue);
+            const hoy = new Date();
+            const gen = document.getElementById('genero').value;
+            const anioNac = dob.getFullYear();
+
+            // Cálculo preciso de edad en meses
+            let mesesActual = (hoy.getFullYear() - dob.getFullYear()) * 12 + (hoy.getMonth() - dob.getMonth());
+            if (hoy.getDate() < dob.getDate()) mesesActual--;
+
+            document.getElementById('pantalla-inicio').classList.add('hidden');
+            document.getElementById('resultados').classList.remove('hidden');
+
+            const inminentes = [], brechas = [], pasadas = [];
+
+            PNI_HISTORICO.forEach(v => {
+                // Filtro por género si aplica
+                if (v.gen !== "todos" && gen !== "todos" && v.gen !== gen) return;
+
+                const edadCumplida = mesesActual >= v.meses;
+                const yaExistia = (!v.inicio || anioNac >= v.inicio) && (!v.fin || anioNac <= v.fin);
+                const proximo30 = (v.meses - mesesActual >= 0) && (v.meses - mesesActual <= 1);
+
+                if (proximo30 && yaExistia) {
+                    inminentes.push(v.n);
+                } else if (edadCumplida) {
+                    if (yaExistia) pasadas.push(v.n);
+                    else brechas.push(`${v.n} (No existía en ${anioNac})`);
+                }
+            });
+
+            // Renderizar
+            document.getElementById('list-inminente').innerHTML = inminentes.map(i => `<li>${i}</li>`).join('');
+            document.getElementById('box-inminente').style.display = inminentes.length ? 'block' : 'none';
+
+            document.getElementById('list-brecha').innerHTML = brechas.map(b => `<li>${b}</li>`).join('');
+            document.getElementById('box-brecha').style.display = brechas.length ? 'block' : 'none';
+
+            document.getElementById('list-pasadas').innerHTML = pasadas.map(p => `<li>• ${p}</li>`).join('');
+        }
+    </script>
+</body>
+</html>
