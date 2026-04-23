@@ -220,7 +220,7 @@
                 }
             }
 
-            // AUDITORÍA PNI E IDENTIFICACIÓN DE VIRUS VIVOS
+            // AUDITORÍA PNI, COMPLEMENTARIAS E IDENTIFICACIÓN DE VIRUS VIVOS
             PNI.forEach(v => {
                 if (v.gen && gen !== "todos" && v.gen !== gen) return;
                 if (v.rapanui && !isRapaNui) return;
@@ -230,6 +230,23 @@
                 const anioHito = fechaHito.getFullYear();
                 const vigente = (!v.inicio || anioHito >= v.inicio) && (!v.fin || anioHito <= v.fin);
                 const diff = v.meses - edad.totalMeses;
+
+                if (!v.pni) {
+                    // Lógica Complementarias Privadas
+                    if (v.n.includes("Rotavirus") && edad.totalMeses <= 6) {
+                        if (edad.totalSemanas > 14) {
+                            contraindicaciones.push(`⛔ <b>ROTAVIRUS:</b> El paciente tiene más de 14 semanas (${edad.totalSemanas} sem). Riesgo elevado de invaginación intestinal. NO INICIAR ESQUEMA.`);
+                        } else {
+                            opcionales.push(`• <b>Rotavirus:</b> Iniciar antes de las 14 semanas. (Virus vivo oral).`);
+                            if (checkedRisks.includes("capullo_inmuno")) {
+                                contraindicaciones.push("⚠️ <b>PRECAUCIÓN ROTAVIRUS:</b> Si se administra, evitar contacto de heces con familiar inmunosuprimido por 2 semanas.");
+                            }
+                        }
+                    } else if (v.n.includes("Bexsero") && diff >= 0 && diff <= 6) {
+                        opcionales.push(`• <b>Meningocócica B:</b> Intercalar con Hexavalente para evitar reactogenicidad.`);
+                    }
+                    return; // No procesar como PNI histórico
+                }
 
                 if (diff >= 0 && diff <= 2) { // Ventana de 2 meses para proyecciones
                     if (vigente) {
@@ -269,6 +286,7 @@
             document.getElementById('box-alerta-vivo').classList.toggle('hidden', !alertaVivo || contraindicaciones.length > 0);
             
             document.getElementById('list-campana').innerHTML = campanas.map(c => `<div>${c}</div>`).join('') || "<div>No aplica criterios de campaña.</div>";
+            document.getElementById('list-complementarias').innerHTML = opcionales.map(o => `<div>${o}</div>`).join('') || "Sin sugerencias en este rango de edad.";
             document.getElementById('list-proyeccion').innerHTML = proy.map(p => `<div>${p}</div>`).join('') || "Sin vacunas PNI próximas.";
             document.getElementById('list-brecha').innerHTML = brechas.map(b => `<li>${b}</li>`).join('');
             document.getElementById('list-pasadas').innerHTML = pasadas.map(p => `<div>✅ ${p}</div>`).join('');
