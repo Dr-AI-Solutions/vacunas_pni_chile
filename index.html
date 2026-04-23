@@ -109,6 +109,21 @@
     </footer>
 
     <script>
+
+        const MAPA_RIESGOS = {
+            "embarazo": ["Influenza (Cualquier etapa gestacional)", "dTpa (Requisito: Desde semana 28 para traspaso de Ac al feto)", "COVID-19 Refuerzo"],
+            "salud": ["Influenza (Obligatoria MinSal)", "Hepatitis B (Verificar esquema 0-1-6)", "COVID-19 Refuerzo", "Mpox (Según exposición clínica)"],
+            "educacion": ["Influenza (Para evitar brotes escolares)"],
+            "avicola": ["Influenza (Específico: Prevenir reordenamiento genético de cepas humanas y animales)"],
+            "capullo_prema": ["dTpa (Estrategia Capullo: Prevenir transmisión de Coqueluche al lactante vulnerable)", "Influenza (Estrategia Capullo)"],
+            "capullo_inmuno": ["Influenza (Estrategia Capullo)", "COVID-19 (Estrategia Capullo)", "SRP y Varicela (Verificar inmunidad de contactos directos)"],
+            "prematuro": ["Neumocócica (Aplicar esquema PNI para prematuros 13v)"],
+            "asma": ["Influenza (Criterio: Enf. Respiratoria Crónica)", "COVID-19 Refuerzo"],
+            "congenita": ["Influenza (Criterio: Cardiopatía)", "COVID-19 Refuerzo"],
+            "vih": ["Influenza", "COVID-19 Refuerzo", "Mpox", "Hepatitis B", "Neumocócica (Esquema Especial Inmunocomprometidos)"],
+            "diabetes": ["Influenza", "COVID-19 Refuerzo"],
+            "prep": ["Mpox (Criterio: Riesgo de exposición sexual)"]
+        };
         const PNI = [
             { n: "BCG (Tuberculosis)", meses: 0, inicio: 1980, pni: true, vivo: true },
             { n: "Hepatitis B (RN)", meses: 0, inicio: 2005, pni: true },
@@ -126,6 +141,7 @@
             { n: "VPH (4°/5° Básico)", meses: 108, inicio: 2014, gen: "femenino", pni: true },
             { n: "VPH (4°/5° Básico)", meses: 108, inicio: 2019, gen: "masculino", pni: true },
             { n: "dTpa (8° Básico)", meses: 156, inicio: 2012, pni: true },
+            //COMPLEMENTARIAS
             { n: "Rotavirus (1ra - Privada)", meses: 2, limiteMaxSemanas: 14, pni: false, vivo: true, nota: "Riesgo de invaginación intestinal si se inicia tarde." },
             { n: "Meningocócica B (Bexsero - Privada)", meses: 3, pni: false, nota: "Intercalada para evitar reactogenicidad con Hexavalente." }
         ];
@@ -159,6 +175,7 @@
             // LÓGICA DE RIESGOS ACUMULATIVOS
             const checkedRisks = Array.from(document.querySelectorAll('.risk-check:checked')).map(c => c.value);
 
+            //1. RIESGOS Y CAMPAÑAS
             if (checkedRisks.includes("cronico")) campanas.push("▶ <b>Influenza y COVID-19:</b> Criterio de patología crónica (Renal, Cardíaca, Hepática, etc).");
             
             // CORRECCIÓN: Inmuno ahora sí suma Influenza y Covid, además de Mpox/Neumo
@@ -190,12 +207,12 @@
             document.getElementById('vph-mensaje').innerText = vphSugerencia;
 
             //Lógica Nirsevimab (VRS)
-            cons meActual = oy.getMonth(); // 0 = Enero, 3 = Abril, 8 = Septiembre
-            const enCamapanInvierno = (mesActual >= 3 && mesActual <=8); //Abril a Septiembre
+            const mesActual = hoy.getMonth(); // 0 = Enero, 3 = Abril, 8 = Septiembre
+            const enCamapanaInvierno = (mesActual >= 3 && mesActual <=8); //Abril a Septiembre
 
             if (enCampanaInvierno) {
                 if (edad.totalMeses <= 6 {
-                    campanas.push("<b>NIrsevimab (VRS:</b> Dosis universal (Lactante < 6m en temporada).");
+                    campanas.push("<b>Nirsevimab (VRS:</b> Dosis universal (Lactante < 6m en temporada).");
                 } else if (checkedRisks.includes(prematuro") || checkedRisks.includes("congenita")) {
                     if (edad.totalMeses <= 24) {
                         campanas.push("<b>Nirsevimab (VRS):</b> Dosis grupo de riesgo (Segunda temporada de invierno para PRematuro/Cardiópata).");
