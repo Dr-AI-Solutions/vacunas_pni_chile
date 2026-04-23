@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StatVax v4.0 - Buscador de Riesgos</title>
+    <title>StatVax v4.1 - Auditoría Profesional</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-100 p-2 md:p-4 font-sans text-slate-800">
@@ -13,24 +13,24 @@
             <div class="flex justify-between items-start">
                 <div>
                     <h1 class="text-2xl font-black text-indigo-400 tracking-tighter italic">StatVax <span class="text-white font-light">CL</span></h1>
-                    <p id="display-edad" class="text-slate-400 text-[10px] font-mono mt-1 uppercase tracking-widest italic">Soporte de Decisión Clínica</p>
+                    <p id="display-edad" class="text-slate-400 text-[10px] font-mono mt-1 uppercase tracking-widest italic">Análisis Clínico e Inmunológico</p>
                 </div>
                 <div class="text-right">
-                    <span class="text-[9px] bg-indigo-900 px-2 py-1 rounded-full border border-indigo-700 font-bold text-indigo-200 uppercase">v4.0 Alpha</span>
+                    <span class="text-[9px] bg-indigo-900 px-2 py-1 rounded-full border border-indigo-700 font-bold text-indigo-200 uppercase tracking-tighter">v4.1 Clinical</span>
                 </div>
             </div>
         </div>
 
         <div class="p-4 md:p-6 space-y-4">
-            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-[10px] font-black text-slate-500 uppercase mb-1">Fecha de Nacimiento</label>
-                        <input type="date" id="dob" onchange="auditar()" class="w-full p-2 border-2 border-indigo-100 rounded-lg text-sm font-bold shadow-sm">
+                        <input type="date" id="dob" onchange="auditar()" class="w-full p-2 border-2 border-indigo-100 rounded-lg text-sm font-bold shadow-sm outline-none focus:border-indigo-500">
                     </div>
                     <div>
                         <label class="block text-[10px] font-black text-slate-500 uppercase mb-1">Género</label>
-                        <select id="genero" onchange="auditar()" class="w-full p-2 border-2 border-indigo-100 rounded-lg text-sm bg-white">
+                        <select id="genero" onchange="auditar()" class="w-full p-2 border-2 border-indigo-100 rounded-lg text-sm bg-white outline-none">
                             <option value="todos">Seleccionar...</option>
                             <option value="femenino">Femenino</option>
                             <option value="masculino">Masculino</option>
@@ -38,34 +38,31 @@
                     </div>
                     <div>
                         <label class="block text-[10px] font-black text-slate-500 uppercase mb-1">Condición de Riesgo Especial</label>
-                        <select id="condicionRiesgo" onchange="auditar()" class="w-full p-2 border-2 border-indigo-100 rounded-lg text-[11px] bg-white text-indigo-800 font-medium">
+                        <select id="condicionRiesgo" onchange="auditar()" class="w-full p-2 border-2 border-indigo-100 rounded-lg text-[11px] bg-white text-indigo-800 font-medium outline-none">
                             <option value="ninguna">-- Ninguna / Sano --</option>
-                            <optgroup label="Respiratorio">
+                            <optgroup label="Grupos Prioritarios PNI">
+                                <option value="embarazo">Gestante (Influenza + dTpa)</option>
+                                <option value="salud">Personal de Salud</option>
+                            </optgroup>
+                            <optgroup label="Respiratorio / Cardiaco">
                                 <option value="asma">Asma Grave / Obstrucción Crónica</option>
                                 <option value="fibrosis">Fibrosis Quística</option>
-                            </optgroup>
-                            <optgroup label="Cardiaco">
                                 <option value="congenita">Cardiopatía Congénita</option>
-                                <option value="hipertension">Hipertensión Arterial Crónica</option>
                             </optgroup>
                             <optgroup label="Inmunológico / Otros">
                                 <option value="vih">VIH / Inmunodeficiencias</option>
                                 <option value="cancer">Cáncer en tratamiento</option>
                                 <option value="diabetes">Diabetes Mellitus</option>
-                                <option value="prematuro">Prematuro extremas (<32s / <1.5kg)</option>
+                                <option value="prematuro">Prematuro (<32s / <1.5kg)</option>
                                 <option value="prep">Usuario PrEP (Mpox)</option>
-                            </optgroup>
-                            <optgroup label="Especiales">
-                                <option value="embarazo">Gestante</option>
-                                <option value="salud">Personal de Salud</option>
                             </optgroup>
                         </select>
                     </div>
                 </div>
 
-                <div class="flex gap-4 mt-4 border-t pt-3">
-                    <label class="flex items-center space-x-2 text-[10px] font-bold"><input type="checkbox" id="esViajero" onchange="auditar()"> <span>VIAJE ENDÉMICO</span></label>
-                    <label class="flex items-center space-x-2 text-[10px] font-bold"><input type="checkbox" id="esRapaNui" onchange="auditar()"> <span>RESIDENCIA RAPA NUI</span></label>
+                <div class="flex flex-wrap gap-4 mt-4 border-t pt-3">
+                    <label class="flex items-center space-x-2 text-[10px] font-bold cursor-pointer"><input type="checkbox" id="esViajero" onchange="auditar()" class="w-4 h-4"> <span>VIAJE ENDÉMICO</span></label>
+                    <label class="flex items-center space-x-2 text-[10px] font-bold cursor-pointer"><input type="checkbox" id="esRapaNui" onchange="auditar()" class="w-4 h-4"> <span>RESIDENCIA RAPA NUI</span></label>
                 </div>
             </div>
 
@@ -73,23 +70,29 @@
                 
                 <div id="box-campanas" class="bg-indigo-900 text-white p-4 rounded-xl shadow-lg border-b-4 border-indigo-700">
                     <h3 class="text-xs font-black uppercase mb-3 flex items-center border-b border-indigo-400 pb-1 italic">
-                        📢 Reporte de Campañas (Riesgos Detectados)
+                        📢 Reporte de Campañas y Grupos de Riesgo
                     </h3>
-                    <div id="list-campana" class="text-[11px] space-y-2 font-medium"></div>
+                    <div id="list-campana" class="text-[11px] space-y-2 font-medium opacity-95"></div>
+                </div>
+
+                <div id="box-vph-sugerencia" class="bg-blue-50 border-l-4 border-blue-600 p-4 rounded-r-lg shadow-sm">
+                    <h3 class="text-blue-800 font-black text-xs uppercase mb-1">💉 Sugerencia VPH (Papiloma Humano)</h3>
+                    <p id="vph-mensaje" class="text-[11px] text-blue-900 italic font-medium"></p>
                 </div>
 
                 <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
-                    <h3 class="text-amber-800 font-black text-xs uppercase mb-2 underline italic">📅 Próximas PNI Sugeridas</h3>
+                    <h3 class="text-amber-800 font-black text-xs uppercase mb-2 underline italic">📅 Calendario Próximo PNI</h3>
                     <div id="list-proyeccion" class="text-[11px] space-y-1"></div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-red-50 border-t-4 border-red-500 p-3 rounded-b-xl">
-                        <h3 class="text-red-800 font-black text-[10px] uppercase mb-1">🚫 Brechas de Inmunización</h3>
+                        <h3 class="text-red-800 font-black text-[10px] uppercase mb-1">🚫 Brechas Detectadas</h3>
+                        <p class="text-[8px] text-red-400 mb-2 italic">Vacunas que le corresponderían por edad pero no existían en el PNI en su momento.</p>
                         <ul id="list-brecha" class="text-[10px] text-red-900 list-disc pl-4 font-bold"></ul>
                     </div>
                     <div class="bg-emerald-50 border-t-4 border-emerald-500 p-3 rounded-b-xl">
-                        <h3 class="text-emerald-800 font-black text-[10px] uppercase mb-1">✅ Historial PNI Estimado</h3>
+                        <h3 class="text-emerald-800 font-black text-[10px] uppercase mb-1">✅ PNI al Día (Estimado)</h3>
                         <div id="list-pasadas" class="text-[9px] text-emerald-700 font-medium"></div>
                     </div>
                 </div>
@@ -98,31 +101,29 @@
     </div>
 
     <script>
-        // MAPEO DE RIESGOS (BASE DE DATOS CLÍNICA)
         const MAPA_RIESGOS = {
             "asma": ["Influenza", "COVID-19"],
             "fibrosis": ["Influenza", "COVID-19", "Neumocócica Extra"],
             "congenita": ["Influenza", "COVID-19", "Nirsevimab (VRS)"],
-            "hipertension": ["Influenza", "COVID-19"],
-            "vih": ["Influenza", "COVID-19", "Mpox", "Hepatitis B Refuerzo"],
+            "vih": ["Influenza", "COVID-19", "Mpox", "Hepatitis B (Refuerzo)"],
             "cancer": ["Influenza", "COVID-19", "Mpox"],
             "diabetes": ["Influenza", "COVID-19"],
-            "prematuro": ["Nirsevimab (VRS)", "Esquema Prematuro Neumocócica"],
+            "prematuro": ["Nirsevimab (VRS)", "Neumocócica (Esquema Prematuro)"],
             "prep": ["Mpox"],
-            "embarazo": ["Influenza", "COVID-19", "dTpa (desde 28 sem)"],
-            "salud": ["Influenza", "COVID-19", "Mpox", "Hepatitis B"]
+            "embarazo": ["Influenza (Cualquier etapa gestacional)", "dTpa (Desde la semana 28 de gestación)", "COVID-19"],
+            "salud": ["Influenza (Obligatoria)", "Hepatitis B (Esquema 0-1-6 si no tiene registro)", "COVID-19", "Mpox (Exposición)"]
         };
 
         const PNI = [
             { n: "BCG (Tuberculosis)", meses: 0, inicio: 1980, pni: true },
             { n: "Hepatitis B (RN)", meses: 0, inicio: 2005, pni: true },
-            { n: "Hexavalente", meses: 2, inicio: 2018, pni: true },
+            { n: "Hexavalente (1ra, 2da, 3ra)", meses: 2, inicio: 2018, pni: true },
             { n: "Tres Vírica (SRP 1ra)", meses: 12, inicio: 1990, pni: true },
+            { n: "Meningocócica ACWY", meses: 12, inicio: 2014, pni: true },
             { n: "Hepatitis A", meses: 18, inicio: 2018, pni: true },
             { n: "Varicela (1ra)", meses: 18, inicio: 2020, pni: true },
-            { n: "Fiebre Amarilla", meses: 18, rapanui: true, pni: true },
-            { n: "VPH", meses: 108, inicio: 2014, gen: "femenino" },
-            { n: "VPH", meses: 108, inicio: 2019, gen: "masculino" }
+            { n: "VPH (4°/5° Básico)", meses: 108, inicio: 2014, gen: "femenino", pni: true },
+            { n: "VPH (4°/5° Básico)", meses: 108, inicio: 2019, gen: "masculino", pni: true }
         ];
 
         function getEdadExacta(dob, hoy) {
@@ -150,24 +151,34 @@
 
             const campanas = [], proy = [], brechas = [], pasadas = [];
 
-            // 1. CRUCE DINÁMICO DE RIESGOS
-            // Por edad
-            if (edad.totalMeses >= 6 && edad.totalMeses <= 132) campanas.push("Influenza (Grupo Escolar)");
+            // 1. RIESGOS Y CAMPAÑAS
+            if (edad.totalMeses >= 6 && edad.totalMeses <= 132) campanas.push("Influenza (Población Escolar)");
             if (edad.anios >= 60) campanas.push("Influenza y COVID-19 (Adulto Mayor)");
             
-            // Por condición seleccionada
             if (condicion !== "ninguna" && MAPA_RIESGOS[condicion]) {
                 MAPA_RIESGOS[condicion].forEach(v => {
-                    campanas.push(`${v} <span class="opacity-60 text-[9px] block">Motivo: Criterio clínico por ${condicion.toUpperCase()}</span>`);
+                    campanas.push(`${v} <span class="opacity-70 text-[9px] block">Motivo: Criterio por ${condicion.toUpperCase()}</span>`);
                 });
             }
 
-            // Nirsevimab automático
             if (edad.totalMeses <= 6 || (condicion === "prematuro" && edad.totalMeses <= 24)) {
-                campanas.push("Nirsevimab (VRS) <span class='text-blue-300'>[Campaña Invierno 2026]</span>");
+                campanas.push("Nirsevimab (VRS) <span class='text-blue-300 italic'>[Campaña Invierno 2026]</span>");
             }
 
-            // 2. AUDITORÍA PNI
+            // 2. VPH CATCH-UP LOGIC
+            let vphSugerencia = "";
+            const yaDeberiaTenerVPH = edad.totalMeses >= 108;
+            const esPNIVPH = (gen === "femenino" && dob.getFullYear() >= 2005) || (gen === "masculino" && dob.getFullYear() >= 2010);
+
+            if (yaDeberiaTenerVPH) {
+                const esquema = (edad.anios < 15) ? "2 dosis (0 y 6 meses)" : "3 dosis (0, 2 y 6 meses)";
+                vphSugerencia = esPNIVPH ? "Paciente cubierto por PNI escolar. Verificar registro de 4° y 5° básico." : `Fuera de cohorte PNI. Se sugiere administración particular por beneficio clínico. Esquema: ${esquema}.`;
+            } else {
+                vphSugerencia = "Pendiente: Se administra al cumplir 9 años (4° Básico) por PNI.";
+            }
+            document.getElementById('vph-mensaje').innerText = vphSugerencia;
+
+            // 3. AUDITORÍA PNI
             PNI.forEach(v => {
                 if (v.gen && gen !== "todos" && v.gen !== gen) return;
                 if (v.rapanui && !isRapaNui) return;
@@ -179,22 +190,22 @@
                 const diff = v.meses - edad.totalMeses;
 
                 if (diff >= 0 && diff <= 6) {
-                    if (vigente) proy.push(`• ${v.n} (en ${diff} m)`);
+                    if (vigente) proy.push(`• ${v.n} (en ${diff} meses)`);
                 } else if (v.pni) {
                     if (vigente) pasadas.push(`${v.n} (${anioHito})`);
-                    else if (v.inicio && anioHito < v.inicio) brechas.push(`${v.n} (En ${anioHito} no era PNI)`);
+                    else if (v.inicio && anioHito < v.inicio) brechas.push(`${v.n} (No existía en el PNI en el año ${anioHito})`);
                 }
             });
 
-            // 3. VIAJERO
+            // 4. VIAJEROS
             if (isViajero) {
-                if (edad.totalMeses >= 6 && edad.totalMeses < 12) campanas.push("SRP Dosis Cero (Protocolo Viajero)");
-                if (!isRapaNui) campanas.push("Fiebre Amarilla (Viaje: Sugerir compra)");
+                if (edad.totalMeses >= 6 && edad.totalMeses < 12) campanas.push("Sarampión (SRP) Dosis Cero por Viaje");
+                if (!isRapaNui) campanas.push("Fiebre Amarilla (Sugerencia Viaje - Privada)");
             }
 
             // RENDER
-            document.getElementById('list-campana').innerHTML = campanas.map(c => `<li>• ${c}</li>`).join('') || "<li>No se detectan riesgos específicos.</li>";
-            document.getElementById('list-proyeccion').innerHTML = proy.map(p => `<div>${p}</div>`).join('') || "Sin vacunas PNI próximas.";
+            document.getElementById('list-campana').innerHTML = campanas.map(c => `<li>• ${c}</li>`).join('') || "<li>No se detectan riesgos adicionales.</li>";
+            document.getElementById('list-proyeccion').innerHTML = proy.map(p => `<div>${p}</div>`).join('') || "Sin vacunas próximas en ventana de 6 meses.";
             document.getElementById('list-brecha').innerHTML = brechas.map(b => `<li>${b}</li>`).join('');
             document.getElementById('list-pasadas').innerHTML = pasadas.map(p => `<div>✅ ${p}</div>`).join('');
         }
