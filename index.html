@@ -3,128 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StatVax v5.0 - Auditoría Clínica Total</title>
+    <title>StatVax v5.5 - Auditoría Total</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-100 p-2 md:p-4 font-sans text-slate-800">
-    <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden border-t-8 border-slate-900">
+<body class="bg-slate-100 p-2 md:p-4 font-sans text-slate-800 flex flex-col min-h-screen">
+    <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden border-t-8 border-slate-900 flex-grow">
         
-        <div class="bg-slate-900 p-5 text-white shadow-inner">
+        <div class="bg-slate-900 p-5 text-white">
             <div class="flex justify-between items-start">
                 <div>
-                    <h1 class="text-2xl font-black text-indigo-400 tracking-tighter italic">StatVax <span class="text-white font-light text-lg">CL</span></h1>
-                    <p id="display-edad" class="text-slate-400 text-[10px] font-mono mt-1 uppercase tracking-widest italic">Análisis Inmunológico Multicriterio</p>
+                    <h1 class="text-2xl font-black text-indigo-400 tracking-tighter italic">StatVax <span class="text-white font-light">CL</span></h1>
+                    <p id="display-edad" class="text-slate-400 text-[10px] font-mono mt-1 uppercase tracking-widest italic">Soporte de Decisión Clínica Proactiva</p>
                 </div>
                 <div class="text-right">
-                    <span class="text-[9px] bg-indigo-900 px-2 py-1 rounded-full border border-indigo-700 font-bold text-indigo-200">v5.0 Stable</span>
+                    <span class="text-[9px] bg-emerald-700 px-2 py-1 rounded-full border border-emerald-500 font-bold text-white uppercase tracking-tighter">v5.5 Professional</span>
                 </div>
             </div>
         </div>
 
-        <div class="p-4 md:p-6 space-y-5">
-            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-[10px] font-black text-slate-500 uppercase mb-1">Fecha de Nacimiento</label>
-                    <input type="date" id="dob" onchange="auditar()" class="w-full p-2 border-2 border-indigo-100 rounded-lg text-sm font-bold shadow-sm outline-none focus:border-indigo-500">
+        <div class="p-4 md:p-6 space-y-4">
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-500 uppercase mb-1">Fecha de Nacimiento</label>
+                        <input type="date" id="dob" onchange="auditar()" class="w-full p-2 border-2 border-indigo-100 rounded-lg text-sm font-bold outline-none focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-500 uppercase mb-1">Género</label>
+                        <select id="genero" onchange="auditar()" class="w-full p-2 border-2 border-indigo-100 rounded-lg text-sm bg-white outline-none">
+                            <option value="todos">Seleccionar...</option>
+                            <option value="femenino">Femenino</option>
+                            <option value="masculino">Masculino</option>
+                        </select>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-[10px] font-black text-slate-500 uppercase mb-1">Género Registral</label>
-                    <select id="genero" onchange="auditar()" class="w-full p-2 border-2 border-indigo-100 rounded-lg text-sm bg-white outline-none">
-                        <option value="todos">Seleccionar...</option>
-                        <option value="femenino">Femenino</option>
-                        <option value="masculino">Masculino</option>
-                    </select>
-                </div>
-            </div>
 
-            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                <h3 class="text-[10px] font-black text-indigo-600 uppercase mb-3 border-b pb-1">Condiciones y Factores de Riesgo (Acumulables)</h3>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    <label class="flex items-center space-x-2 p-2 bg-slate-50 rounded hover:bg-indigo-50 cursor-pointer border border-transparent hover:border-indigo-200 transition-all">
-                        <input type="checkbox" class="riesgo-check w-4 h-4" value="salud" onchange="auditar()">
-                        <span class="text-[10px] font-bold">Personal Salud</span>
-                    </label>
-                    <label class="flex items-center space-x-2 p-2 bg-slate-50 rounded hover:bg-indigo-50 cursor-pointer border border-transparent hover:border-indigo-200 transition-all">
-                        <input type="checkbox" class="riesgo-check w-4 h-4" value="embarazo" onchange="auditar()">
-                        <span class="text-[10px] font-bold">Gestante</span>
-                    </label>
-                    <label class="flex items-center space-x-2 p-2 bg-slate-50 rounded hover:bg-indigo-50 cursor-pointer border border-transparent hover:border-indigo-200 transition-all">
-                        <input type="checkbox" class="riesgo-check w-4 h-4" value="cronico" onchange="auditar()">
-                        <span class="text-[10px] font-bold">Pat. Crónica</span>
-                    </label>
-                    <label class="flex items-center space-x-2 p-2 bg-slate-50 rounded hover:bg-indigo-50 cursor-pointer border border-transparent hover:border-indigo-200 transition-all">
-                        <input type="checkbox" class="riesgo-check w-4 h-4" value="educacion" onchange="auditar()">
-                        <span class="text-[10px] font-bold">Trab. Educación</span>
-                    </label>
-                    <label class="flex items-center space-x-2 p-2 bg-slate-50 rounded hover:bg-indigo-50 cursor-pointer border border-transparent hover:border-indigo-200 transition-all">
-                        <input type="checkbox" class="riesgo-check w-4 h-4" value="avicola" onchange="auditar()">
-                        <span class="text-[10px] font-bold">Trab. Avícola</span>
-                    </label>
-                    <label class="flex items-center space-x-2 p-2 bg-slate-50 rounded hover:bg-indigo-50 cursor-pointer border border-transparent hover:border-indigo-200 transition-all">
-                        <input type="checkbox" class="riesgo-check w-4 h-4" value="capullo" onchange="auditar()">
-                        <span class="text-[10px] font-bold">Estrategia Capullo</span>
-                    </label>
-                    <label class="flex items-center space-x-2 p-2 bg-slate-50 rounded hover:bg-orange-50 cursor-pointer border border-transparent hover:border-orange-200 transition-all">
-                        <input type="checkbox" id="esViajero" onchange="auditar()" class="w-4 h-4 text-orange-600">
-                        <span class="text-[10px] font-bold text-orange-700">Viaje Endémico</span>
-                    </label>
-                    <label class="flex items-center space-x-2 p-2 bg-slate-50 rounded hover:bg-blue-50 cursor-pointer border border-transparent hover:border-blue-200 transition-all">
-                        <input type="checkbox" id="esRapaNui" onchange="auditar()" class="w-4 h-4 text-blue-600">
-                        <span class="text-[10px] font-bold text-blue-700">Rapa Nui</span>
-                    </label>
+                <div class="border-t pt-3">
+                    <p class="text-[9px] font-black text-slate-400 uppercase mb-2 italic">Condiciones y Riesgos (Acumulativos):</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-2 text-[10px] font-bold cursor-pointer"><input type="checkbox" class="risk-check w-4 h-4" value="cronico" onchange="auditar()"> <span>Enf. Crónica (Asma, DM, Cardiopatía)</span></label>
+                            <label class="flex items-center space-x-2 text-[10px] font-bold cursor-pointer"><input type="checkbox" class="risk-check w-4 h-4" value="inmuno" onchange="auditar()"> <span>Inmunosupresión / Cáncer / VIH</span></label>
+                            <label class="flex items-center space-x-2 text-[10px] font-bold cursor-pointer"><input type="checkbox" class="risk-check w-4 h-4" value="prematuro" onchange="auditar()"> <span>Prematuro extremas (<1.5kg / <32s)</span></label>
+                            <label class="flex items-center space-x-2 text-[10px] font-bold cursor-pointer"><input type="checkbox" class="risk-check w-4 h-4" value="embarazo" onchange="auditar()"> <span>Gestante</span></label>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-2 text-[10px] font-bold cursor-pointer"><input type="checkbox" class="risk-check w-4 h-4" value="salud" onchange="auditar()"> <span>Personal de Salud</span></label>
+                            <label class="flex items-center space-x-2 text-[10px] font-bold cursor-pointer"><input type="checkbox" class="risk-check w-4 h-4" value="educacion" onchange="auditar()"> <span>Trabajador Educación / Avícola</span></label>
+                            <label class="flex items-center space-x-2 text-[10px] font-bold cursor-pointer text-indigo-600"><input type="checkbox" class="risk-check w-4 h-4" value="capullo" onchange="auditar()"> <span>Contacto de: Prematuro o Inmunosuprimido</span></label>
+                            <div class="flex space-x-4 pt-1">
+                                <label class="flex items-center space-x-1 text-[9px] font-black text-orange-600 cursor-pointer"><input type="checkbox" id="esViajero" onchange="auditar()"> <span>VIAJE</span></label>
+                                <label class="flex items-center space-x-1 text-[9px] font-black text-blue-600 cursor-pointer"><input type="checkbox" id="esRapaNui" onchange="auditar()"> <span>RAPA NUI</span></label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div id="resultados" class="hidden space-y-4">
                 
-                <div id="box-alerta-vivo" class="hidden bg-red-600 text-white p-3 rounded-xl shadow-md animate-pulse">
-                    <h3 class="text-[10px] font-black uppercase flex items-center">⚠️ Alerta de Seguridad: Virus Vivos</h3>
-                    <p class="text-[9px] opacity-90 mt-1">Se detectan vacunas de virus vivo atenuado en el calendario próximo. Si no se administran simultáneamente, deben separarse por al menos 28 días.</p>
+                <div id="box-alerta-vivo" class="hidden bg-red-600 text-white p-3 rounded-lg text-[10px] font-bold flex items-start animate-pulse shadow-lg">
+                    <span class="mr-2 text-lg">⚠️</span>
+                    <p><strong>REGLA DE VIRUS VIVOS:</strong> El paciente requiere vacunas de virus vivo (SRP, Varicela o F. Amarilla). Si se administran en días distintos, deben separarse por 28 días.</p>
                 </div>
 
                 <div id="box-campanas" class="bg-indigo-900 text-white p-4 rounded-xl shadow-lg border-b-4 border-indigo-700">
-                    <h3 class="text-xs font-black uppercase mb-3 flex items-center border-b border-indigo-400 pb-1 italic">📢 Indicaciones por Campaña y Riesgo</h3>
-                    <div id="list-campana" class="text-[11px] space-y-2 font-medium opacity-95"></div>
+                    <h3 class="text-xs font-black uppercase mb-3 flex items-center border-b border-indigo-400 pb-1 italic italic">📢 Reporte de Campañas y Grupos Especiales</h3>
+                    <div id="list-campana" class="text-[11px] space-y-2 opacity-95"></div>
                 </div>
 
-                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
-                    <h3 class="text-amber-800 font-black text-xs uppercase mb-2 underline italic text-[10px]">📅 Calendario Próximo (6 meses)</h3>
-                    <div id="list-proyeccion" class="text-[11px] space-y-1"></div>
+                <div id="box-vph-sugerencia" class="bg-blue-50 border-l-4 border-blue-600 p-4 rounded-r-lg shadow-sm">
+                    <h3 class="text-blue-800 font-black text-xs uppercase mb-1">💉 Sugerencia VPH (Virus Papiloma Humano)</h3>
+                    <p id="vph-mensaje" class="text-[11px] text-blue-900 italic font-medium leading-tight"></p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-red-50 border-t-4 border-red-500 p-3 rounded-b-xl">
-                        <h3 class="text-red-800 font-black text-[10px] uppercase mb-1">🚫 Brechas Detectadas</h3>
+                        <h3 class="text-red-800 font-black text-[10px] uppercase mb-1">🚫 Brechas (No PNI al nacer)</h3>
                         <ul id="list-brecha" class="text-[10px] text-red-900 list-disc pl-4 font-bold"></ul>
                     </div>
-                    <div class="bg-emerald-50 border-t-4 border-emerald-500 p-3 rounded-b-xl shadow-sm">
-                        <h3 class="text-emerald-800 font-black text-[10px] uppercase mb-1">✅ Auditoría PNI Completa</h3>
-                        <div id="list-pasadas" class="text-[9px] text-emerald-700 font-medium grid grid-cols-1 gap-y-0.5"></div>
+                    <div class="bg-emerald-50 border-t-4 border-emerald-500 p-3 rounded-b-xl">
+                        <h3 class="text-emerald-800 font-black text-[10px] uppercase mb-1">✅ Historial PNI Estimado</h3>
+                        <div id="list-pasadas" class="text-[9px] text-emerald-700 font-medium"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <footer class="p-6 text-center text-slate-400 text-[10px] font-mono tracking-widest uppercase">
+        Designed for Clinical Excellence &bull; Powered by <span class="text-indigo-500 font-bold">Dr. AI Solutions</span>
+    </footer>
+
     <script>
-        // BASE DE DATOS CRONOLÓGICA PNI CHILE (EXHAUSTIVA)
         const PNI = [
             { n: "BCG (Tuberculosis)", meses: 0, inicio: 1980, pni: true, vivo: true },
-            { n: "Hepatitis B (Recién Nacido)", meses: 0, inicio: 2005, pni: true },
+            { n: "Hepatitis B (RN)", meses: 0, inicio: 2005, pni: true },
             { n: "Polio Oral (Sabin)", meses: 2, fin: 2017, pni: true, vivo: true },
-            { n: "DPT (Difteria/Tétanos/Tos Convulsiva)", meses: 2, fin: 2004, pni: true },
-            { n: "Pentavalente (DPT+Hib+HB)", meses: 2, inicio: 2005, fin: 2017, pni: true },
-            { n: "Hexavalente (DPT+Hib+HB+Polio)", meses: 2, inicio: 2018, pni: true },
-            { n: "Neumocócica Conjugada", meses: 2, inicio: 2011, pni: true },
-            { n: "Tres Vírica (SRP - 1ra Dosis)", meses: 12, inicio: 1990, pni: true, vivo: true },
+            { n: "DPT / Pentavalente Antigua", meses: 2, fin: 2017, pni: true },
+            { n: "Hexavalente (1ra, 2da, 3ra)", meses: 2, inicio: 2018, pni: true },
+            { n: "Tres Vírica (SRP 1ra)", meses: 12, inicio: 1990, pni: true, vivo: true },
             { n: "Meningocócica ACWY", meses: 12, inicio: 2014, pni: true },
             { n: "Hepatitis A", meses: 18, inicio: 2018, pni: true },
-            { n: "Varicela (1ra Dosis)", meses: 18, inicio: 2020, pni: true, vivo: true },
-            { n: "Tres Vírica (SRP - 2da Dosis)", meses: 36, inicio: 2023, pni: true, vivo: true },
-            { n: "Varicela (2da Dosis)", meses: 36, inicio: 2023, pni: true, vivo: true },
-            { n: "VPH (Papiloma Humano)", meses: 108, inicio: 2014, gen: "femenino", pni: true },
-            { n: "VPH (Papiloma Humano)", meses: 108, inicio: 2019, gen: "masculino", pni: true },
-            { n: "dTpa (Refuerzo Escolar)", meses: 156, inicio: 2012, pni: true }
+            { n: "Varicela (1ra)", meses: 18, inicio: 2020, pni: true, vivo: true },
+            { n: "Fiebre Amarilla (PNI)", meses: 18, rapanui: true, pni: true, vivo: true },
+            { n: "Tres Vírica (SRP 2da)", meses: 36, inicio: 2023, pni: true, vivo: true },
+            { n: "Varicela (2da)", meses: 36, inicio: 2023, pni: true, vivo: true },
+            { n: "Refuerzo BCG (1° y 6° Básico)", meses: 72, fin: 2005, pni: true, vivo: true },
+            { n: "VPH (4°/5° Básico)", meses: 108, inicio: 2014, gen: "femenino", pni: true },
+            { n: "VPH (4°/5° Básico)", meses: 108, inicio: 2019, gen: "masculino", pni: true },
+            { n: "dTpa (8° Básico)", meses: 156, inicio: 2012, pni: true }
         ];
 
         function getEdadExacta(dob, hoy) {
@@ -145,35 +133,36 @@
             document.getElementById('display-edad').innerText = `Edad: ${edad.anios}a, ${edad.meses}m, ${edad.dias}d`;
             document.getElementById('resultados').classList.remove('hidden');
 
-            // Obtener riesgos seleccionados
-            const riesgosSeleccionados = Array.from(document.querySelectorAll('.riesgo-check:checked')).map(cb => cb.value);
+            const gen = document.getElementById('genero').value;
             const isViajero = document.getElementById('esViajero').checked;
             const isRapaNui = document.getElementById('esRapaNui').checked;
-            const gen = document.getElementById('genero').value;
 
-            const campanas = [], proy = [], brechas = [], pasadas = [];
-            let tieneVirusVivoCerca = false;
+            const campanas = [], brechas = [], pasadas = [];
+            let alertaVivo = false;
 
-            // 1. LÓGICA DE RIESGOS ACUMULATIVOS
-            if (edad.totalMeses >= 6 && edad.totalMeses <= 132) campanas.push("Influenza (Grupo Objetivo Escolar)");
-            if (edad.anios >= 60) campanas.push("Influenza y COVID-19 (Adulto Mayor)");
+            // LÓGICA DE RIESGOS ACUMULATIVOS
+            const checkedRisks = Array.from(document.querySelectorAll('.risk-check:checked')).map(c => c.value);
 
-            riesgosSeleccionados.forEach(r => {
-                if (r === 'salud') {
-                    campanas.push("Influenza (P. Salud)", "HepB (Esquema 0-1-6 si no hay registro)", "Mpox (Criterio Exposición Profesional)");
-                }
-                if (r === 'embarazo') {
-                    campanas.push("Influenza (Cualquier etapa gestacional)", "COVID-19 (Refuerzo)", "dTpa (Desde la semana 28 de gestación)");
-                }
-                if (r === 'cronico') {
-                    campanas.push("Influenza (Enfermo Crónico)", "COVID-19 (Refuerzo)", "Neumocócica (Evaluar esquema según patología)");
-                }
-                if (r === 'educacion') campanas.push("Influenza (Trabajador de la Educación hasta 8° Básico)");
-                if (r === 'avicola') campanas.push("Influenza (Trabajador Avícola / Porcino)");
-                if (r === 'capullo') campanas.push("Estrategia Capullo: Vacunar entorno para proteger a neonato/inmunosuprimido (Influenza/Pertussis)");
-            });
+            if (checkedRisks.includes("cronico")) campanas.push("▶ <b>Influenza y COVID-19:</b> Criterio de patología crónica (Renal, Cardíaca, Hepática, etc).");
+            if (checkedRisks.includes("inmuno")) campanas.push("▶ <b>Mpox y Neumocócica:</b> Criterio de inmunosupresión o tratamiento oncológico.");
+            if (checkedRisks.includes("embarazo")) campanas.push("▶ <b>Influenza</b> (toda la gestación) y <b>dTpa</b> (desde la semana 28).");
+            if (checkedRisks.includes("salud")) campanas.push("▶ <b>Influenza, Hepatitis B y Mpox:</b> Por exposición en personal de salud.");
+            if (checkedRisks.includes("educacion")) campanas.push("▶ <b>Influenza:</b> Trabajador de centros educativos o sector avícola/porcino.");
+            if (checkedRisks.includes("prematuro")) campanas.push("▶ <b>Nirsevimab (VRS):</b> Esquema extendido hasta los 24 meses.");
+            if (checkedRisks.includes("capullo")) campanas.push("▶ <b>dTpa e Influenza (Estrategia Capullo):</b> Familiar directo de prematuro <32s/1.5kg o inmunosuprimido.");
 
-            // 2. AUDITORÍA PNI E HISTÓRICO
+            if (edad.totalMeses >= 6 && edad.totalMeses <= 132) campanas.push("▶ <b>Influenza:</b> Grupo objetivo escolar (hasta 5° básico).");
+
+            // VPH CATCH-UP LOGIC
+            let vphSugerencia = "";
+            const esPNIVPH = (gen === "femenino" && dob.getFullYear() >= 2005) || (gen === "masculino" && dob.getFullYear() >= 2010);
+            if (edad.totalMeses >= 108) {
+                const esquema = (edad.anios < 15) ? "2 dosis (0 y 6 meses)" : "3 dosis (0, 2 y 6 meses)";
+                vphSugerencia = esPNIVPH ? "✅ Paciente bajo cohorte PNI. Verificar registro escolar de 4° y 5° básico." : `⚠️ Fuera de cohorte PNI. Se sugiere administración particular por utilidad clínica (prevención cánceres). Esquema: ${esquema}.`;
+            } else { vphSugerencia = "⏳ Pendiente: Entra al PNI escolar en 4° básico (9 años)."; }
+            document.getElementById('vph-mensaje').innerText = vphSugerencia;
+
+            // AUDITORÍA PNI
             PNI.forEach(v => {
                 if (v.gen && gen !== "todos" && v.gen !== gen) return;
                 if (v.rapanui && !isRapaNui) return;
@@ -184,40 +173,22 @@
                 const vigente = (!v.inicio || anioHito >= v.inicio) && (!v.fin || anioHito <= v.fin);
                 const diff = v.meses - edad.totalMeses;
 
-                if (diff >= 0 && diff <= 6) {
-                    if (vigente) {
-                        proy.push(`• ${v.n} (al cumplir ${v.meses} m)`);
-                        if (v.vivo) tieneVirusVivoCerca = true;
-                    }
-                } else if (v.pni) {
-                    if (vigente) pasadas.push(`✅ ${v.n} (${anioHito})`);
-                    else if (v.inicio && anioHito < v.inicio) {
-                        brechas.push(`${v.n} (Implementada en ${v.inicio})`);
-                    }
+                if (diff >= 0 && diff <= 1 && v.vivo) alertaVivo = true;
+
+                if (diff < 0 && v.pni) {
+                    vigente ? pasadas.push(`${v.n} <span class="text-[8px] opacity-60">(${anioHito})</span>`) : (v.inicio && anioHito < v.inicio ? brechas.push(`${v.n} (Introducida en ${v.inicio})`) : null);
                 }
             });
 
-            // 3. LOGICA VIAJEROS Y VPH
             if (isViajero) {
-                if (edad.totalMeses >= 6 && edad.totalMeses < 12) {
-                    campanas.push("Sarampión (SRP) Dosis Cero por Viaje");
-                    tieneVirusVivoCerca = true;
-                }
-                if (!isRapaNui) campanas.push("Fiebre Amarilla (Recomendada - Particular)");
+                campanas.push("✈️ <b>Viajero:</b> Evaluar Sarampión (SRP) y Fiebre Amarilla.");
+                alertaVivo = true;
             }
 
-            // VPH SUGERENCIA
-            if (edad.totalMeses >= 108) {
-                const esPNIVPH = (gen === "femenino" && dob.getFullYear() >= 2005) || (gen === "masculino" && dob.getFullYear() >= 2010);
-                if (!esPNIVPH) campanas.push("VPH (Virus Papiloma Humano): Sugerida particular por beneficio clínico.");
-            }
-
-            // RENDERIZADO
-            document.getElementById('list-campana').innerHTML = campanas.map(c => `<li>• ${c}</li>`).join('') || "No se detectan riesgos adicionales.";
-            document.getElementById('list-proyeccion').innerHTML = proy.map(p => `<div>${p}</div>`).join('') || "Sin vacunas próximas en 6 meses.";
+            document.getElementById('box-alerta-vivo').classList.toggle('hidden', !alertaVivo);
+            document.getElementById('list-campana').innerHTML = campanas.map(c => `<div>${c}</div>`).join('') || "<div>No aplica criterios de campaña.</div>";
             document.getElementById('list-brecha').innerHTML = brechas.map(b => `<li>${b}</li>`).join('');
-            document.getElementById('list-pasadas').innerHTML = pasadas.map(p => `<div>${p}</div>`).join('');
-            document.getElementById('box-alerta-vivo').classList.toggle('hidden', !tieneVirusVivoCerca);
+            document.getElementById('list-pasadas').innerHTML = pasadas.map(p => `<div>✅ ${p}</div>`).join('');
         }
     </script>
 </body>
