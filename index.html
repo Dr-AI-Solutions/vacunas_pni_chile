@@ -158,7 +158,9 @@
             let dias = hoy.getDate() - dob.getDate();
             if (dias < 0) { meses--; dias += new Date(hoy.getFullYear(), hoy.getMonth(), 0).getDate(); }
             if (meses < 0) { anios--; meses += 12; }
-            return { anios, meses, dias, totalMeses: (anios * 12) + meses };
+            // CÁLCULO DE SEMANAS (Requerido para Rotavirus)
+            const totalSemanas = Math.floor((hoy - dob) / (1000 * 60 * 60 * 24 * 7));
+            return { anios, meses, dias, totalMeses: (anios * 12) + meses, totalSemanas };
         }
 
         function auditar() {
@@ -167,6 +169,7 @@
             const dob = new Date(dobVal + "T12:00:00");
             const hoy = new Date();
             const edad = getEdadExacta(dob, hoy);
+            
             document.getElementById('display-edad').innerText = `Edad: ${edad.anios}a, ${edad.meses}m, ${edad.dias}d`;
             document.getElementById('resultados').classList.remove('hidden');
 
@@ -174,6 +177,7 @@
             const isViajero = document.getElementById('esViajero').checked;
             const isRapaNui = document.getElementById('esRapaNui').checked;
 
+            //VARIABLE OPCIONALES AÑADIDA
             const campanas = [], brechas = [], pasadas = [], proy = [], contraindicaciones = [];
             let alertaVivo = false;
             let vacunasVivasInminentes = [];
@@ -183,7 +187,6 @@
 
             //1. RIESGOS Y CAMPAÑAS
             if (checkedRisks.includes("cronico")) campanas.push("▶ <b>Influenza y COVID-19:</b> Criterio de patología crónica (Renal, Cardíaca, Hepática, etc).");
-            
             // CORRECCIÓN: Inmuno ahora sí suma Influenza y Covid, además de Mpox/Neumo
             if (checkedRisks.includes("inmuno")) campanas.push("▶ <b>Influenza, COVID-19, Mpox y Neumocócica:</b> Criterio de inmunosupresión o tratamiento oncológico.");
             
@@ -203,6 +206,20 @@
 
             if (edad.totalMeses >= 6 && edad.totalMeses <= 132) campanas.push("▶ <b>Influenza:</b> Grupo objetivo escolar (hasta 5° básico).");
 
+            //Lógica Nirsevimab (VRS)
+            const mesActual = hoy.getMonth(); // 0 = Enero, 3 = Abril, 8 = Septiembre
+            const enCamapanaInvierno = (mesActual >= 3 && mesActual <=8); //Abril a Septiembre
+
+            if (enCampanaInvierno) {
+                if (edad.totalMeses <= 6) {
+                    campanas.push("▶ <b>Nirsevimab (VRS:</b> Dosis universal (Lactante < 6m en temporada).");
+                } else if (checkedRisks.includes("prematuro") || checkedRisks.includes("congenita")) {
+                    if (edad.totalMeses <= 24) {
+                        campanas.push("▶ <b>Nirsevimab (VRS):</b> Dosis grupo de riesgo (Segunda temporada de invierno para Prematuro/Cardiópata).");
+                    }
+                }
+            }
+
             // VPH CATCH-UP LOGIC
             let vphSugerencia = "";
             const esPNIVPH = (gen === "femenino" && dob.getFullYear() >= 2005) || (gen === "masculino" && dob.getFullYear() >= 2010);
@@ -211,20 +228,6 @@
                 vphSugerencia = esPNIVPH ? "✅ Paciente bajo cohorte PNI. Verificar registro escolar de 4° y 5° básico." : `⚠️ Fuera de cohorte PNI. Se sugiere administración particular por utilidad clínica (prevención cánceres). Esquema: ${esquema}.`;
             } else { vphSugerencia = "⏳ Pendiente: Entra al PNI escolar en 4° básico (9 años)."; }
             document.getElementById('vph-mensaje').innerText = vphSugerencia;
-
-            //Lógica Nirsevimab (VRS)
-            const mesActual = hoy.getMonth(); // 0 = Enero, 3 = Abril, 8 = Septiembre
-            const enCamapanaInvierno = (mesActual >= 3 && mesActual <=8); //Abril a Septiembre
-
-            if (enCampanaInvierno) {
-                if (edad.totalMeses <= 6 {
-                    campanas.push("<b>Nirsevimab (VRS:</b> Dosis universal (Lactante < 6m en temporada).");
-                } else if (checkedRisks.includes(prematuro") || checkedRisks.includes("congenita")) {
-                    if (edad.totalMeses <= 24) {
-                        campanas.push("<b>Nirsevimab (VRS):</b> Dosis grupo de riesgo (Segunda temporada de invierno para PRematuro/Cardiópata).");
-                    }
-                }
-            }
 
             // AUDITORÍA PNI, COMPLEMENTARIAS E IDENTIFICACIÓN DE VIRUS VIVOS
             PNI.forEach(v => {
