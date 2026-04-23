@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StatVax v5.5 - Auditoría Total</title>
+    <title>StatVax v0.9 Beta - Auditoría y Prevención</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-100 p-2 md:p-4 font-sans text-slate-800 flex flex-col min-h-screen">
@@ -16,7 +16,7 @@
                     <p id="display-edad" class="text-slate-400 text-[10px] font-mono mt-1 uppercase tracking-widest italic">Soporte de Decisión Clínica Proactiva</p>
                 </div>
                 <div class="text-right">
-                    <span class="text-[9px] bg-emerald-700 px-2 py-1 rounded-full border border-emerald-500 font-bold text-white uppercase tracking-tighter">v5.5 Professional</span>
+                    <span class="text-[9px] bg-emerald-700 px-2 py-1 rounded-full border border-emerald-500 font-bold text-white uppercase tracking-tighter">v0.9 Beta RC</span>
                 </div>
             </div>
         </div>
@@ -44,37 +44,50 @@
                         <div class="space-y-2">
                             <label class="flex items-center space-x-2 text-[10px] font-bold cursor-pointer"><input type="checkbox" class="risk-check w-4 h-4" value="cronico" onchange="auditar()"> <span>Enf. Crónica (Asma, DM, Cardiopatía)</span></label>
                             <label class="flex items-center space-x-2 text-[10px] font-bold cursor-pointer"><input type="checkbox" class="risk-check w-4 h-4" value="inmuno" onchange="auditar()"> <span>Inmunosupresión / Cáncer / VIH</span></label>
-                            <label class="flex items-center space-x-2 text-[10px] font-bold cursor-pointer"><input type="checkbox" class="risk-check w-4 h-4" value="prematuro" onchange="auditar()"> <span>Prematuro extremas (<1.5kg / <32s)</span></label>
+                            <label class="flex items-center space-x-2 text-[10px] font-bold cursor-pointer"><input type="checkbox" class="risk-check w-4 h-4" value="prematuro" onchange="auditar()"> <span>Prematuro extremo (<1.5kg / <32s)</span></label>
                             <label class="flex items-center space-x-2 text-[10px] font-bold cursor-pointer"><input type="checkbox" class="risk-check w-4 h-4" value="embarazo" onchange="auditar()"> <span>Gestante</span></label>
                         </div>
                         <div class="space-y-2">
                             <label class="flex items-center space-x-2 text-[10px] font-bold cursor-pointer"><input type="checkbox" class="risk-check w-4 h-4" value="salud" onchange="auditar()"> <span>Personal de Salud</span></label>
                             <label class="flex items-center space-x-2 text-[10px] font-bold cursor-pointer"><input type="checkbox" class="risk-check w-4 h-4" value="educacion" onchange="auditar()"> <span>Trabajador Educación / Avícola</span></label>
-                            <label class="flex items-center space-x-2 text-[10px] font-bold cursor-pointer text-indigo-600"><input type="checkbox" class="risk-check w-4 h-4" value="capullo" onchange="auditar()"> <span>Contacto de: Prematuro o Inmunosuprimido</span></label>
-                            <div class="flex space-x-4 pt-1">
-                                <label class="flex items-center space-x-1 text-[9px] font-black text-orange-600 cursor-pointer"><input type="checkbox" id="esViajero" onchange="auditar()"> <span>VIAJE</span></label>
-                                <label class="flex items-center space-x-1 text-[9px] font-black text-blue-600 cursor-pointer"><input type="checkbox" id="esRapaNui" onchange="auditar()"> <span>RAPA NUI</span></label>
-                            </div>
+                            <label class="flex items-center space-x-2 text-[10px] font-bold cursor-pointer text-indigo-600"><input type="checkbox" class="risk-check w-4 h-4" value="capullo_inmuno" onchange="auditar()"> <span>Contacto de: Inmunosuprimido / Cáncer</span></label>
+                            <label class="flex items-center space-x-2 text-[10px] font-bold cursor-pointer text-indigo-600"><input type="checkbox" class="risk-check w-4 h-4" value="capullo_prema" onchange="auditar()"> <span>Contacto de: Prematuro < 6m</span></label>
                         </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-4 mt-4 pt-3 border-t">
+                        <label class="flex items-center space-x-1 text-[9px] font-black text-orange-600 cursor-pointer"><input type="checkbox" id="esViajero" onchange="auditar()" class="w-4 h-4"> <span>ZONA ENDÉMICA (FIEBRE AMARILLA)</span></label>
+                        <label class="flex items-center space-x-1 text-[9px] font-black text-blue-600 cursor-pointer"><input type="checkbox" id="esRapaNui" onchange="auditar()" class="w-4 h-4"> <span>RESIDENCIA RAPA NUI</span></label>
                     </div>
                 </div>
             </div>
 
             <div id="resultados" class="hidden space-y-4">
                 
-                <div id="box-alerta-vivo" class="hidden bg-red-600 text-white p-3 rounded-lg text-[10px] font-bold flex items-start animate-pulse shadow-lg">
-                    <span class="mr-2 text-lg">⚠️</span>
-                    <p><strong>REGLA DE VIRUS VIVOS:</strong> El paciente requiere vacunas de virus vivo (SRP, Varicela o F. Amarilla). Si se administran en días distintos, deben separarse por 28 días.</p>
+                <div id="box-contraindicaciones" class="hidden bg-red-700 text-white p-4 rounded-xl shadow-lg border-2 border-red-900 animate-pulse">
+                    <h3 class="font-black text-xs uppercase mb-2 flex items-center">
+                        <span class="mr-2 text-xl">⛔</span> CONTRAINDICACIONES ABSOLUTAS
+                    </h3>
+                    <div id="list-contraindicaciones" class="text-[11px] space-y-2 font-medium"></div>
+                </div>
+
+                <div id="box-alerta-vivo" class="hidden bg-orange-100 border-l-4 border-orange-500 text-orange-900 p-3 rounded-r-lg text-[10px] font-bold shadow-sm">
+                    <span class="mr-1 text-lg">⚠️</span> <strong>REGLA DE 28 DÍAS:</strong> Se proyectan vacunas de VIRUS VIVO próximamente. Si el paciente recibió otra vacuna viva reciente, separar por 4 semanas. Si se indican hoy, deben ser simultáneas.
                 </div>
 
                 <div id="box-campanas" class="bg-indigo-900 text-white p-4 rounded-xl shadow-lg border-b-4 border-indigo-700">
-                    <h3 class="text-xs font-black uppercase mb-3 flex items-center border-b border-indigo-400 pb-1 italic italic">📢 Reporte de Campañas y Grupos Especiales</h3>
+                    <h3 class="text-xs font-black uppercase mb-3 flex items-center border-b border-indigo-400 pb-1 italic">📢 Reporte de Campañas y Grupos Especiales</h3>
                     <div id="list-campana" class="text-[11px] space-y-2 opacity-95"></div>
                 </div>
 
                 <div id="box-vph-sugerencia" class="bg-blue-50 border-l-4 border-blue-600 p-4 rounded-r-lg shadow-sm">
                     <h3 class="text-blue-800 font-black text-xs uppercase mb-1">💉 Sugerencia VPH (Virus Papiloma Humano)</h3>
                     <p id="vph-mensaje" class="text-[11px] text-blue-900 italic font-medium leading-tight"></p>
+                </div>
+
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
+                    <h3 class="text-amber-800 font-black text-xs uppercase mb-2 underline italic">📅 Calendario Próximo PNI</h3>
+                    <div id="list-proyeccion" class="text-[11px] space-y-1"></div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -137,19 +150,31 @@
             const isViajero = document.getElementById('esViajero').checked;
             const isRapaNui = document.getElementById('esRapaNui').checked;
 
-            const campanas = [], brechas = [], pasadas = [];
+            const campanas = [], brechas = [], pasadas = [], proy = [], contraindicaciones = [];
             let alertaVivo = false;
+            let vacunasVivasInminentes = [];
 
             // LÓGICA DE RIESGOS ACUMULATIVOS
             const checkedRisks = Array.from(document.querySelectorAll('.risk-check:checked')).map(c => c.value);
 
             if (checkedRisks.includes("cronico")) campanas.push("▶ <b>Influenza y COVID-19:</b> Criterio de patología crónica (Renal, Cardíaca, Hepática, etc).");
-            if (checkedRisks.includes("inmuno")) campanas.push("▶ <b>Mpox y Neumocócica:</b> Criterio de inmunosupresión o tratamiento oncológico.");
+            
+            // CORRECCIÓN: Inmuno ahora sí suma Influenza y Covid, además de Mpox/Neumo
+            if (checkedRisks.includes("inmuno")) campanas.push("▶ <b>Influenza, COVID-19, Mpox y Neumocócica:</b> Criterio de inmunosupresión o tratamiento oncológico.");
+            
             if (checkedRisks.includes("embarazo")) campanas.push("▶ <b>Influenza</b> (toda la gestación) y <b>dTpa</b> (desde la semana 28).");
             if (checkedRisks.includes("salud")) campanas.push("▶ <b>Influenza, Hepatitis B y Mpox:</b> Por exposición en personal de salud.");
             if (checkedRisks.includes("educacion")) campanas.push("▶ <b>Influenza:</b> Trabajador de centros educativos o sector avícola/porcino.");
             if (checkedRisks.includes("prematuro")) campanas.push("▶ <b>Nirsevimab (VRS):</b> Esquema extendido hasta los 24 meses.");
-            if (checkedRisks.includes("capullo")) campanas.push("▶ <b>dTpa e Influenza (Estrategia Capullo):</b> Familiar directo de prematuro <32s/1.5kg o inmunosuprimido.");
+            
+            // Capullo subdividido
+            if (checkedRisks.includes("capullo_prema")) campanas.push("▶ <b>dTpa e Influenza (Estrategia Capullo):</b> Para evitar contagio al prematuro/lactante vulnerable.");
+            if (checkedRisks.includes("capullo_inmuno")) {
+                campanas.push("▶ <b>Influenza y COVID-19 (Estrategia Capullo):</b> Protección del familiar inmunosuprimido.");
+                if (edad.totalMeses <= 6) {
+                    contraindicaciones.push("⚠️ <b>PRECAUCIÓN ROTAVIRUS:</b> Si este lactante recibe vacuna Rotavirus (privada), debe EVITAR el contacto con las heces por parte del familiar inmunosuprimido durante al menos 2 semanas (excreción viral digestiva).");
+                }
+            }
 
             if (edad.totalMeses >= 6 && edad.totalMeses <= 132) campanas.push("▶ <b>Influenza:</b> Grupo objetivo escolar (hasta 5° básico).");
 
@@ -162,7 +187,7 @@
             } else { vphSugerencia = "⏳ Pendiente: Entra al PNI escolar en 4° básico (9 años)."; }
             document.getElementById('vph-mensaje').innerText = vphSugerencia;
 
-            // AUDITORÍA PNI
+            // AUDITORÍA PNI E IDENTIFICACIÓN DE VIRUS VIVOS
             PNI.forEach(v => {
                 if (v.gen && gen !== "todos" && v.gen !== gen) return;
                 if (v.rapanui && !isRapaNui) return;
@@ -173,20 +198,45 @@
                 const vigente = (!v.inicio || anioHito >= v.inicio) && (!v.fin || anioHito <= v.fin);
                 const diff = v.meses - edad.totalMeses;
 
-                if (diff >= 0 && diff <= 1 && v.vivo) alertaVivo = true;
-
-                if (diff < 0 && v.pni) {
-                    vigente ? pasadas.push(`${v.n} <span class="text-[8px] opacity-60">(${anioHito})</span>`) : (v.inicio && anioHito < v.inicio ? brechas.push(`${v.n} (Introducida en ${v.inicio})`) : null);
+                if (diff >= 0 && diff <= 2) { // Ventana de 2 meses para proyecciones
+                    if (vigente) {
+                        proy.push(`• <b>${v.n}</b> (en ${diff} meses)`);
+                        if (v.vivo) {
+                            alertaVivo = true;
+                            vacunasVivasInminentes.push(v.n);
+                        }
+                    }
+                } else if (diff < 0 && v.pni) {
+                    if (vigente) pasadas.push(`${v.n} <span class="text-[8px] opacity-60">(${anioHito})</span>`);
+                    else if (v.inicio && anioHito < v.inicio) brechas.push(`${v.n} (Introducida en ${v.inicio})`);
                 }
             });
 
             if (isViajero) {
-                campanas.push("✈️ <b>Viajero:</b> Evaluar Sarampión (SRP) y Fiebre Amarilla.");
+                campanas.push("✈️ <b>Viajero Z. Endémica:</b> Evaluar Sarampión (SRP Dosis Cero) y Fiebre Amarilla.");
                 alertaVivo = true;
+                vacunasVivasInminentes.push("Fiebre Amarilla / SRP (Viaje)");
             }
 
-            document.getElementById('box-alerta-vivo').classList.toggle('hidden', !alertaVivo);
+            // CROSS-CHECK DE CONTRAINDICACIONES ABSOLUTAS
+            if (vacunasVivasInminentes.length > 0) {
+                if (checkedRisks.includes("inmuno")) {
+                    contraindicaciones.push(`⛔ <b>INMUNOSUPRESIÓN:</b> Contraindicación ABSOLUTA para vacunas de virus vivo inminentes: <u>${vacunasVivasInminentes.join(", ")}</u>. NO ADMINISTRAR.`);
+                }
+                if (checkedRisks.includes("embarazo")) {
+                    contraindicaciones.push(`⛔ <b>EMBARAZO:</b> Contraindicación ABSOLUTA para vacunas de virus vivo inminentes: <u>${vacunasVivasInminentes.join(", ")}</u>.`);
+                }
+            }
+
+            // RENDER LÓGICO
+            document.getElementById('box-contraindicaciones').classList.toggle('hidden', contraindicaciones.length === 0);
+            document.getElementById('list-contraindicaciones').innerHTML = contraindicaciones.map(c => `<div>${c}</div>`).join('');
+
+            // Ocultar alerta de 28 días si ya hay contraindicación absoluta para no saturar
+            document.getElementById('box-alerta-vivo').classList.toggle('hidden', !alertaVivo || contraindicaciones.length > 0);
+            
             document.getElementById('list-campana').innerHTML = campanas.map(c => `<div>${c}</div>`).join('') || "<div>No aplica criterios de campaña.</div>";
+            document.getElementById('list-proyeccion').innerHTML = proy.map(p => `<div>${p}</div>`).join('') || "Sin vacunas PNI próximas.";
             document.getElementById('list-brecha').innerHTML = brechas.map(b => `<li>${b}</li>`).join('');
             document.getElementById('list-pasadas').innerHTML = pasadas.map(p => `<div>✅ ${p}</div>`).join('');
         }
